@@ -11,9 +11,7 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+$router->post('login','app_credential\LoginAppController@LoginAppController');
 
 $router->group(['prefix' => 'transaksi_bimbingan'], function () use ($router) {
   
@@ -24,4 +22,22 @@ $router->group(['prefix' => 'transaksi_bimbingan'], function () use ($router) {
    $router->post('create','transaksi_bimbingan\TransaksiBimbinganController@create');
   
 });
+
+
+
+
+
+/*use Illuminate\Http\Request;
+
+$router->get('/post/{id}', ['middleware' => 'auth', function (Request $request, $id) {
+    $user = Auth::user();
+    $user = $request->user();
+
+    //
+}]);*/
+
+$router->get('/', function () use ($router) {
+    return $router->app->version();
+});
+
 
