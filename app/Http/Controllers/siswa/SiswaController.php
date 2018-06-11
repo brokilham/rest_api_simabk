@@ -191,13 +191,14 @@ class SiswaController extends Controller
         
     
 
-    public function GetAllGuruBk(Request $request){     
+    public function GetAllGuruBk(Request $request){  
+  
         try{
             $GuruBk = DB::select(" SELECT 
-                                        id_guru AS Id_Guru,
+                                        id_guru AS Id_GuruBK,
                                         m_guru.nama AS Nama,
                                         m_guru.alamat AS Alamat,
-                                        m_guru.no_telp AS No_telp,
+                                        m_guru.no_telp AS No_Telp,
                                         m_guru.email 
                                     FROM
                                         t_distribusi_jabatans AS jabatan
@@ -220,13 +221,13 @@ class SiswaController extends Controller
 
     public function GetJadwalBimbingan(Request $request){
         try{
-
+  
             $DataJadwalGuruBK = DB::select("SELECT 
                                         d_jadwal.id_jadwal AS Kode_Jadwal,
                                         d_jadwal.id_guru AS Id_GuruBk,
                                         m_jadwal.hari AS Hari,
-                                        m_jam.jam_mulai AS Jam_Mulai,
-                                        m_jam.jam_selesai AS Jam_Selesai
+                                        m_jam.jam_mulai AS JamMulai,
+                                        m_jam.jam_selesai AS JamSelesai
                                     FROM
                                         t_distribusi_jadwals AS d_jadwal
                                     LEFT JOIN

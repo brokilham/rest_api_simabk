@@ -14,9 +14,9 @@
 $router->post('login','app_credential\LoginAppController@LoginAppController');
 
 $router->group(['prefix' => 'siswa'], function () use ($router) {
-    $router->get('Index','siswa\SiswaController@index');
-    $router->get('GetAllPelanggaran','siswa\SiswaController@GetAllPelanggaran');
-    $router->get('GetAllBimbingan','siswa\SiswaController@GetAllBimbingan');
+    $router->post('Index','siswa\SiswaController@index');
+    $router->post('GetAllPelanggaran','siswa\SiswaController@GetAllPelanggaran');
+    $router->post('GetAllBimbingan','siswa\SiswaController@GetAllBimbingan');
     $router->get('GetAllGuruBk','siswa\SiswaController@GetAllGuruBk');
     $router->post('GetJadwalBimbingan','siswa\SiswaController@GetJadwalBimbingan');
     
