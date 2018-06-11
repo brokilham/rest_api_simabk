@@ -13,6 +13,17 @@
 
 $router->post('login','app_credential\LoginAppController@LoginAppController');
 
+$router->group(['prefix' => 'siswa'], function () use ($router) {
+    $router->get('Index','siswa\SiswaController@index');
+    $router->get('GetAllPelanggaran','siswa\SiswaController@GetAllPelanggaran');
+    $router->get('GetAllBimbingan','siswa\SiswaController@GetAllBimbingan');
+    $router->get('GetAllGuruBk','siswa\SiswaController@GetAllGuruBk');
+    $router->post('GetJadwalBimbingan','siswa\SiswaController@GetJadwalBimbingan');
+    
+   // $router->get('DataTimeLine','siswa\SiswaController@DataTimeLine');
+    
+});
+
 $router->group(['prefix' => 'transaksi_bimbingan'], function () use ($router) {
   
     //http://localhost/rest_api_simabk/public/transaksi_bimbingan/create
