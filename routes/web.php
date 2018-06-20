@@ -19,7 +19,7 @@ $router->group(['prefix' => 'siswa'], function () use ($router) {
     $router->post('GetAllBimbingan','siswa\SiswaController@GetAllBimbingan');
     $router->get('GetAllGuruBk','siswa\SiswaController@GetAllGuruBk');
     $router->post('GetJadwalBimbingan','siswa\SiswaController@GetJadwalBimbingan');
-    
+    $router->post('CreateBimbingan','siswa\SiswaController@CreateBimbingan');  
    // $router->get('DataTimeLine','siswa\SiswaController@DataTimeLine');
     
 });

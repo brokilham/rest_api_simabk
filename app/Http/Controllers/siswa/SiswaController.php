@@ -223,8 +223,9 @@ class SiswaController extends Controller
         try{
   
             $DataJadwalGuruBK = DB::select("SELECT 
+                                        d_jadwal.id AS Id_Distribusi_Jadwal,         
                                         d_jadwal.id_jadwal AS Kode_Jadwal,
-                                        d_jadwal.id_guru AS Id_GuruBk,
+                                        d_jadwal.id_guru AS Id_GuruBK,
                                         m_jadwal.hari AS Hari,
                                         m_jam.jam_mulai AS JamMulai,
                                         m_jam.jam_selesai AS JamSelesai
@@ -254,4 +255,74 @@ class SiswaController extends Controller
             return response()->json(['status' => 'E', 'DataJadwalGuruBk' => $e] );
         }
     }
-}
+
+    public function CreateBimbingan(Request $request){
+        // langkah2 membuat rencana
+        //1. cek apakah siswa memiliki rencana yang belum di approve?klau
+        // masih punya tidak bisa buat baru, mesti terlaksana dulu yang sebelumnya
+        //2. apakah guru bk pada jadwal bimbingan yang sama, tgl rencana buat sudah memiliki janji
+        // jika sudah memiliki janji maka tidak bisa pada hari itu, di beri notifikasi 
+        // bahwa sudah ada jadwal 
+        
+        try{
+            $s_siswa_bimbingan = DB::select("SELECT COUNT(*) AS TotBimbingan_siswa 
+                                                FROM t_bimbingans 
+                                                WHERE status_realisasi = ''
+                                                    AND Id_siswa = :id_siswa",["id_siswa" => $request->IdSiswa]);
+            
+            $s_guru_bk_bimbingan = DB::select("SELECT COUNT(*) AS TotBimbingan_guru_bk 
+                                                FROM t_bimbingans 
+                                                WHERE status_realisasi = '' AND tgl_pengajuan = :tgl_pengajuan
+                                                    AND Id_Jadwal = :Id_Jadwal ",
+                                                ["Id_Jadwal" => $request->KodeJadwal,"tgl_pengajuan"=>$request->WaktuRenJanji]);
+
+            if($s_siswa_bimbingan[0]->TotBimbingan_siswa == 0 &&
+                    $s_guru_bk_bimbingan[0]->TotBimbingan_guru_bk  == 0){
+
+                        
+                $return_id_guru =  DB::select("SELECT id_guru FROM t_distribusi_jadwals WHERE id = :id",
+                                ['id' => $request->Id_Distribusi_Jadwal]);
+  
+                if(count($return_id_guru)>0){
+                     // perlu mendapatkan id guru terlbeih dahulu
+                    $return = DB::insert('INSERT INTO t_bimbingans 
+                    (created_at, updated_at,id_guru,
+                    id_siswa,id_jadwal,tgl_pengajuan,tipe,
+                    topik_bimbingan,status,created_by) 
+                    values (?, ?,?,?,?,?,?,?,?,?)',
+                    ['GETDATE()', 'GETDATE()',  $return_id_guru[0]->id_guru,
+                    $request->IdSiswa, $request->KodeJadwal,
+                    $request->WaktuRenJanji,"-",
+                    $request->Topik,"active",
+                    $request->IdSiswa]);
+
+                    //$result = ($return == 1)? "S":"E";
+                    if($return == 1){
+                        return response()->json(['status' =>  "S",'message' => "Rencana Telah dibuat"]);
+                    }else{
+                        return response()->json(['status' =>  "E",'message' => "Rencana gagal dibuat"]);
+                    }
+                
+                }else{
+                    return response()->json(['status' => 'E', 'message' => "ID guru dari kode jadwal ".$request->Id_Distribusi_Jadwal." tidak ditemukan"] );
+                }
+                
+        
+            }else{
+                if($s_siswa_bimbingan[0]->TotBimbingan_siswa > 0){
+                    return response()->json(['status' => 'E', 'message' => "siswa telah memiliki jadwal untuk bimbingan sebelumnya !!!"] );
+                }
+                else{
+                    return response()->json(['status' => 'E', 'message' => "guru bk pada tanggal dan jadwal yang di pilih telah memiliki jadwal !!!"] );
+                }
+                
+            }
+
+            
+        }
+        catch(Exception $e){
+            return response()->json(['status' => 'E', 'message' => $e] );
+        }
+    }
+}    
+              
