@@ -30,9 +30,12 @@ $router->group(['prefix' => 'walimurid'], function () use ($router) {
 });
 
 $router->group(['prefix' => 'walikelas'], function () use ($router) {
-    
+    $router->post('GetDataCharts','walikelas\WalikelasController@GetDataCharts');
+    $router->post('GetDataSiswaSekelas','walikelas\WalikelasController@GetDataSiswaSekelas');
+    $router->post('GetPelanggaranByIdSiswa','walikelas\WalikelasController@GetPelanggaranByIdSiswa');
+    $router->post('GetActivitySiswaById','walikelas\WalikelasController@GetActivitySiswaById');
+    $router->post('GetHistoryKelas','walikelas\WalikelasController@GetHistoryKelas');
 });
-
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
