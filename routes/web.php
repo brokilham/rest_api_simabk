@@ -23,28 +23,16 @@ $router->group(['prefix' => 'siswa'], function () use ($router) {
     $router->post('GetDataTimeLine','siswa\SiswaController@GetDataTimeLine');  
 });
 
-$router->group(['prefix' => 'transaksi_bimbingan'], function () use ($router) {
-  
-    //http://localhost/rest_api_simabk/public/transaksi_bimbingan/create
-    // $router->get('create','transaksi_bimbingan\TransaksiBimbinganController@create');
-
-   //http://localhost/rest_api_simabk/public/transaksi_bimbingan/create?tes=halo&tes2=kamu
-   $router->post('create','transaksi_bimbingan\TransaksiBimbinganController@create');
-  
+$router->group(['prefix' => 'walimurid'], function () use ($router) {
+    $router->post('GetDataCharts','walimurid\WalimuridController@GetDataCharts');
+    $router->post('GetAllPelanggaran','walimurid\WalimuridController@GetAllPelanggaran');
+    $router->post('GetAllBimbingan','walimurid\WalimuridController@GetAllBimbingan'); 
 });
 
+$router->group(['prefix' => 'walikelas'], function () use ($router) {
+    
+});
 
-
-
-
-/*use Illuminate\Http\Request;
-
-$router->get('/post/{id}', ['middleware' => 'auth', function (Request $request, $id) {
-    $user = Auth::user();
-    $user = $request->user();
-
-    //
-}]);*/
 
 $router->get('/', function () use ($router) {
     return $router->app->version();

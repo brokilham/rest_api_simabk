@@ -15,6 +15,7 @@ class SiswaController extends Controller
      * @return Response
      */
 
+    // untuk gambar grafiknya 
     public function index(Request $request){
        
         try
