@@ -20,8 +20,7 @@ $router->group(['prefix' => 'siswa'], function () use ($router) {
     $router->get('GetAllGuruBk','siswa\SiswaController@GetAllGuruBk');
     $router->post('GetJadwalBimbingan','siswa\SiswaController@GetJadwalBimbingan');
     $router->post('CreateBimbingan','siswa\SiswaController@CreateBimbingan');  
-   // $router->get('DataTimeLine','siswa\SiswaController@DataTimeLine');
-    
+    $router->post('GetDataTimeLine','siswa\SiswaController@GetDataTimeLine');  
 });
 
 $router->group(['prefix' => 'transaksi_bimbingan'], function () use ($router) {

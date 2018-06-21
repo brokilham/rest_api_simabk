@@ -95,91 +95,47 @@ class SiswaController extends Controller
         }
     }
 
-    /*public function DataTimeLine(Request $request){
-        
-        // Masih dari api yang lama 
-         
-        // pengajuan di ajukan kapan
-        // disetujui atau di tolak atau kadaluarsa kapan
-        // status akhir, datang, tidak datang, guru bk tidak menemui
-
-        // alur 
-        // jika status ren adalah o, maka langsung ditampilan, sbagai rencana belum di setujui
-        // jika status ren tidak 0, tgl approval atau kdaluarsa ditampilkan, maka langusng encari di tabel realisasi, untuk mendapatkan status akhir
-
-        // kotak 1: rencana di ajukan tgl 11
-        // kotak 2: recana telah di setujui atau tolak atau kadaluarsa tgl xxxx
-        // kotak 3: status realisasi adalah xxxx, pada tgl xxxxx
-        try
-        {
-            $Id_Siswa = $request->Id_Siswa;
-
-            $PengajuanRencana =  DB::select('Select * from t_ren_konseling_bimbingan where  Id_Siswa = :Id_Siswa order by Waktu_Ren_Buat desc limit 1' ,['Id_Siswa' => $Id_Siswa]);
-           
-            
-            if (!empty($PengajuanRencana)) // jika seorang siswa memiliki pengajuan bimbingan
-            {
-                 // jika 0 maka pengajuan rencana belum di setujui dan alur method berakhir disini
-                $TglPengajuanBuat = $PengajuanRencana[0]->Waktu_Ren_Buat;
-                $TopikBimbingan = $PengajuanRencana[0]->Topik;
-                $StatusRencana = $PengajuanRencana[0]->Status_Ren;
-                $KodeRencana = $PengajuanRencana[0]->Kode_Ren;
-                $WaktuRencanaBimbingan = $PengajuanRencana[0]->Waktu_Ren_Janji;
-                // 0 rencana belum di setujui
-                // 1 rencana disetujui
-                // 2 rencanan kadauarsa
-                // 3 rencana ditolak
-                // 4 kegiatan langsung
-
-                if($StatusRencana != 0) // saat rencana // disetujui // ditolak // kadaluarsa
-                {
-                      $DetailRealisasi =  DB::select('Select * from t_rel_konseling_bimbingan where  Kode_Ren =  :Kode_Ren' ,['Kode_Ren' => $KodeRencana]);   
-
-                      $WaktuResponRencana =    $DetailRealisasi[0]->Rel_Acc_Time;
-                      $StatusRealisasi    =    $DetailRealisasi[0]->Rel_Ren_Status;
-                      $KodeRealisasi      =    $DetailRealisasi[0]->Kode_Rel;
-
-                
+    public function GetDataTimeLine(Request $request){
+        try{
+                 $PengajuanRencana = DB::select("SELECT * 
+                                FROM t_bimbingans 
+                                WHERE status_realisasi = ''
+                                    AND Id_siswa = :id_siswa",["id_siswa" => $request->Id_Siswa]);
+                 // jika siswa memiliki rencana bimbingan   
+                 if (!empty($PengajuanRencana)){
+                    $TglPengajuanBuat = $PengajuanRencana[0]->created_at;
+                    $TopikBimbingan = $PengajuanRencana[0]->topik_bimbingan;
+                    $StatusRencana = $PengajuanRencana[0]->status_approval;
+                    $KodeRencana = $PengajuanRencana[0]->id;
+                    $WaktuRencanaBimbingan = $PengajuanRencana[0]->tgl_pengajuan;
 
 
-                }
-                else // ketika rencana belum di setujui
-                {
+                    if($StatusRencana != ""){ // saat rencana // disetujui // ditolak // kadaluarsa                    
+                          $WaktuResponRencana =    $PengajuanRencana[0]->tgl_approval;
+                          $StatusRealisasi    =    $PengajuanRencana[0]->status_realisasi;
+                          $KodeRealisasi      =    $PengajuanRencana[0]->id; 
+                    }
+                    else{ // ketika rencana belum di setujui
+                    
+                        $WaktuResponRencana = 'null';
+                        $StatusRealisasi = 'null';
+                        $KodeRealisasi =   'null';  
+                    }
+                 }
+                 else{ // jika siswa tidk memiliki rencana bimbingan 
+
+                    $TglPengajuanBuat   = 'null';
+                    $TopikBimbingan     = 'null';
+                    $StatusRencana      = 'null';
+                    $KodeRencana        = 'null';
                     $WaktuResponRencana = 'null';
-                    $StatusRealisasi = 'null';
+                    $StatusRealisasi    = 'null';
+                    $WaktuRencanaBimbingan = 'null';
                     $KodeRealisasi =   'null';
+                 }
 
-                }
-
-
-            }
-            else // jika siswa tidak memiliki rencana bimbingan
-            {
-                $TglPengajuanBuat   = 'null';
-                $TopikBimbingan     = 'null';
-                $StatusRencana      = 'null';
-                $KodeRencana        = 'null';
-                $WaktuResponRencana = 'null';
-                $StatusRealisasi    = 'null';
-                $WaktuRencanaBimbingan = 'null';
-                $KodeRealisasi =   'null';
-            }
-           
-
-          
-            //yang akan dikembalikan
-            // status sukses
-            
-            //rencana
-            // tgl pengajuan rencana
-            // topik bimbingan dan konseling
-
-            // tgl tindak lanjut bisa ditolak, disetujui, kadaluarsa
-            //  status tindak lanjut
-
-            //tgl realisasi kegiatan
-            // status realisasi kegiatan
-            return response()->json(['status' => 'S','TglPengajuanBuat' => $TglPengajuanBuat,'TopikBimbingan' => $TopikBimbingan,'StatusRencana' => $StatusRencana,'KodeRencana' => $KodeRencana,'WaktuResponRencana'=>$WaktuResponRencana,'StatusRealisasi'=>$StatusRealisasi,'WaktuRencanaBimbingan'=>$WaktuRencanaBimbingan,'KodeRealisasi'=>$KodeRealisasi]);
+                 return response()->json(['status' => 'S','TglPengajuanBuat' => $TglPengajuanBuat,'TopikBimbingan' => $TopikBimbingan,'StatusRencana' => $StatusRencana,'KodeRencana' => $KodeRencana,'WaktuResponRencana'=>$WaktuResponRencana,'StatusRealisasi'=>$StatusRealisasi,'WaktuRencanaBimbingan'=>$WaktuRencanaBimbingan,'KodeRealisasi'=>$KodeRealisasi]);
+        
         }
         catch(Exception $e)
         {
@@ -187,9 +143,7 @@ class SiswaController extends Controller
 
         }
 
-     }*/
-        
-    
+    }
 
     public function GetAllGuruBk(Request $request){  
   
