@@ -105,6 +105,17 @@ class WalimuridController extends Controller
 
     // tinggal sesuaikan nama kolom
     public function GetAllPelanggaran(Request $request){
+
+        /* RowObject      = Data.getJSONObject(i);
+                                Id_Pelanggaran = RowObject.getString("Id_Pelanggaran");
+                                Id_Siswa       = RowObject.getString("Id_Siswa");
+                                Tindakan_Pelanggaran   = RowObject.getString("Tindakan_Pelanggaran");
+                                Tindakan_Pendisiplinan = RowObject.getString("Tindakan_Pendisiplinan");
+                                Created_By     = RowObject.getString("Created_By");
+                                Created_Time   = RowObject.getString("Created_Time");
+                                Updated_By     = RowObject.getString("Updated_By");
+                                Updated_Time   = RowObject.getString("Updated_Time");
+         */
         try{         
             $PelanggaranAll = DB::select("SELECT
                                     *
@@ -125,6 +136,19 @@ class WalimuridController extends Controller
     }
     // tinggal sesuaikan nama kolom
     public function GetAllBimbingan(Request $request){
+
+        /*
+           RowObject      = Data.getJSONObject(i);
+            Kode_Rel       = RowObject.getString("Kode_Rel");
+            Kode_Ren       = RowObject.getString("Kode_Ren");
+            Rel_Acc_Status = RowObject.getString("Rel_Acc_Status");
+            Rel_waktu_janji= RowObject.getString("Rel_waktu_janji");
+            Rel_Acc_Time   = RowObject.getString("Rel_Acc_Time");
+            Rel_Ren_Status = RowObject.getString("Rel_Ren_Status");
+            Topik          = RowObject.getString("Topik");
+
+        
+        */
         try{   
             $BimbinganAll = DB::select("SELECT
                                         *
