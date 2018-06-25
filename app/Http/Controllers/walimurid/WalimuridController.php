@@ -103,27 +103,24 @@ class WalimuridController extends Controller
 
     }
 
-    // tinggal sesuaikan nama kolom
     public function GetAllPelanggaran(Request $request){
 
-        /* RowObject      = Data.getJSONObject(i);
-                                Id_Pelanggaran = RowObject.getString("Id_Pelanggaran");
-                                Id_Siswa       = RowObject.getString("Id_Siswa");
-                                Tindakan_Pelanggaran   = RowObject.getString("Tindakan_Pelanggaran");
-                                Tindakan_Pendisiplinan = RowObject.getString("Tindakan_Pendisiplinan");
-                                Created_By     = RowObject.getString("Created_By");
-                                Created_Time   = RowObject.getString("Created_Time");
-                                Updated_By     = RowObject.getString("Updated_By");
-                                Updated_Time   = RowObject.getString("Updated_Time");
-         */
-        try{         
+        try{           
+                                    
             $PelanggaranAll = DB::select("SELECT
-                                    *
-                                    FROM
-                                    mstr_walimurids AS walimurid
-                                    LEFT JOIN t_pelanggarans AS pelanggaran ON walimurid.mstr_siswa_id = pelanggaran.id_siswa
-                                    WHERE
-                                    walimurid.id = :id_walimurid",["id_walimurid" => $request->Id_WaliMurid]);      
+                                                pelanggaran.id AS Id_Pelanggaran,
+                                                pelanggaran.id_siswa AS Id_Siswa,
+                                                pelanggaran.keterangan_pelanggaran AS Tindakan_Pelanggaran,
+                                                pelanggaran.keterangan_pendisiplinan AS Tindakan_Pendisiplinan,
+                                                pelanggaran.created_by AS Created_By,
+                                                pelanggaran.created_at AS Created_Time,
+                                                pelanggaran.created_by AS Updated_By,
+                                                pelanggaran.updated_at AS Updated_Time
+                                            FROM
+                                                mstr_walimurids AS walimurid
+                                            LEFT JOIN t_pelanggarans AS pelanggaran ON walimurid.mstr_siswa_id = pelanggaran.id_siswa
+                                            WHERE
+                                                walimurid.id = :id_walimurid",["id_walimurid" => $request->Id_WaliMurid]);   
 
             //$StatusPelanggaran = ($PelanggaranAll == TRUE)?"S":"E";
            // return response()->json(['status' => $StatusPelanggaran,'data' => $PelanggaranAll]);
@@ -134,30 +131,25 @@ class WalimuridController extends Controller
              return response()->json(['status' => 'E', 'message' => $e] );
         }
     }
-    // tinggal sesuaikan nama kolom
+
     public function GetAllBimbingan(Request $request){
 
-        /*
-           RowObject      = Data.getJSONObject(i);
-            Kode_Rel       = RowObject.getString("Kode_Rel");
-            Kode_Ren       = RowObject.getString("Kode_Ren");
-            Rel_Acc_Status = RowObject.getString("Rel_Acc_Status");
-            Rel_waktu_janji= RowObject.getString("Rel_waktu_janji");
-            Rel_Acc_Time   = RowObject.getString("Rel_Acc_Time");
-            Rel_Ren_Status = RowObject.getString("Rel_Ren_Status");
-            Topik          = RowObject.getString("Topik");
-
-        
-        */
         try{   
-            $BimbinganAll = DB::select("SELECT
-                                        *
-                                    FROM
+          
+            $BimbinganAll = DB::select(" SELECT
+                                        bimbingan.id AS Kode_Rel,
+                                        bimbingan.id AS Kode_Ren,
+                                        bimbingan.status_approval AS Rel_Acc_Status,
+                                        bimbingan.tgl_pengajuan AS Rel_waktu_janji,
+                                        bimbingan.tgl_approval AS Rel_Acc_Time,
+                                        bimbingan.status_realisasi AS Rel_Ren_Status,
+                                        bimbingan.topik_bimbingan AS Topik
+                                        FROM
                                         mstr_walimurids AS walimurid
-                                    LEFT JOIN t_bimbingans AS bimbingan ON walimurid.mstr_siswa_id = bimbingan.id_siswa
-                                    WHERE
+                                        LEFT JOIN t_bimbingans AS bimbingan ON walimurid.mstr_siswa_id = bimbingan.id_siswa
+                                        WHERE
                                         bimbingan.status_realisasi = '1'
-                                    AND walimurid.id = :id_walimurid",["id_walimurid" => $request->Id_WaliMurid]);      
+                                        AND walimurid.id = :id_walimurid",["id_walimurid" => $request->Id_WaliMurid]); 
 
             //$StatusBimbingan = ($BimbinganAll == TRUE)?"S":"E";
             //return response()->json(['status' => $StatusBimbingan,'data' => $BimbinganAll]);
